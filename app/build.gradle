@@ -67,9 +67,9 @@ android {
 
 // Disables GoogleServices tasks for F-Droid variant
 android.applicationVariants.all { variant ->
-    def shouldProcessGoogleServices = variant.flavorName == "play"
-    def googleTask = tasks.findByName("process${variant.name.capitalize()}GoogleServices")
-    googleTask.enabled = shouldProcessGoogleServices
+//    def shouldProcessGoogleServices = variant.flavorName == "play"
+//    def googleTask = tasks.findByName("process${variant.name.capitalize()}GoogleServices")
+//    googleTask.enabled = shouldProcessGoogleServices
 }
 
 // Strips out REQUEST_INSTALL_PACKAGES permission for Google Play variant
