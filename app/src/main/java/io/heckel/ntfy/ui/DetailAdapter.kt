@@ -504,12 +504,20 @@ class DetailAdapter(private val activity: Activity, private val lifecycleScope: 
         }
 
         private fun runViewAction(context: Context, action: Action) {
+            val url = action.url ?: return
             try {
-                val url = action.url ?: return
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                val intent = if (url.startsWith("intent://")) {
+                    Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                } else {
+                    Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
                 }
-                context.startActivity(intent)
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Log.e("IntentHandler", "No activity found to handle intent: $url")
+                }
             } catch (e: Exception) {
                 Log.w(TAG, "Unable to start activity from URL ${action.url}", e)
                 val message = if (e is ActivityNotFoundException) action.url else e.message
